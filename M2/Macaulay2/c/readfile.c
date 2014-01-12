@@ -272,6 +272,7 @@ node readfile(char *filename) {
      cur.filename = filename;
      fd = open(cur.filename,O_RDONLY);
      if (ERROR == fd) fatal("can't open file %s",cur.filename);
+     if (verbose) fprintf(stderr,"-- reading %s\n",filename);
      cur.text = readfile2(fd,&size);
      cur.eot = cur.text+size, cur.lineno=1, cur.column=0;
      cur.wrapit = TRUE;
@@ -300,6 +301,7 @@ static int pathopen(const char *path, const char *filename, char **pathopened){
 		    p = buf;
 		    if (p[0]=='.' && p[1]=='/') p += 2;
 		    *pathopened = cur.filename = strperm(p);
+		    if (verbose) fprintf(stderr,"-- reading %s\n",cur.filename);
 		    return f;
 		    }
 	       path = eop;
@@ -311,6 +313,7 @@ static int pathopen(const char *path, const char *filename, char **pathopened){
 	  f = open(filename,O_RDONLY);
 	  if (f != ERROR) {
 	       *pathopened = cur.filename = strperm(filename);
+	       if (verbose) fprintf(stderr,"-- reading %s\n",cur.filename);
 	       return f;
 	       }
      	  return ERROR;

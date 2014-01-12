@@ -284,6 +284,7 @@ static void opendb() {
   int maxn = 0;
   db = gdbm_open("typecode.db",0,GDBM_WRCREAT|GDBM_SYNC,0644,NULL);
   if (db == NULL) fatal("failed to open typecode.db");
+  if (verbose) fprintf(stderr,"-- opening typecode.db\n");
   key = gdbm_firstkey(db);
   while (key.dptr != NULL) {
     datum value = gdbm_fetch(db,key);
