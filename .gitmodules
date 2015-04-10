@@ -22,3 +22,6 @@
 [submodule "M2/submodules/googletest"]
 	path = M2/submodules/googletest
 	url = https://github.com/Macaulay2/googletest.git
+[submodule "M2/submodules/Singular"]
+	path = M2/submodules/Singular
+	url = https://github.com/Macaulay2/Singular.git
