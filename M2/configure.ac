@@ -784,7 +784,7 @@ AC_SUBST(LIBLIST, " missing atomic_ops gc gdbm mpir mpfr pari readline ntl flint
 
 # a library is listed in BUILD_ALWAYS if and only if we *always* build it, 
 # even if the option "--disable-building" is specified:
-BUILD_ALWAYS=" missing gtest "
+BUILD_ALWAYS=" missing "
 
 for i in $LIBLIST
 do eval BUILD_$i=no
@@ -842,7 +842,7 @@ AC_ARG_ENABLE(fflas-ffpack,
     ENABLE_GIVARO=yes
     )
 
-BUILD_gtest=yes
+AC_CHECK_HEADER(gtest/gtest.h,,BUILD_gtest=yes)
 
 PROGLIST=" $PROGLIST "
 AC_ARG_WITH(unbuilt-programs, 
