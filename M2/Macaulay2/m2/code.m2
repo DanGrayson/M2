@@ -57,7 +57,12 @@ code Nothing := null -> null
 code Symbol := code Pseudocode := s -> getSourceLines locate s
 code Sequence := s -> (
      f := lookup s;
-     if f =!= null then "-- code for method: " | formatDocumentTag s || code f 
+     if f =!= null 
+     then (
+	  p := "-- code for method: " | formatDocumentTag s || code f ;
+	  if hookLocations #? s then p = p || code showHooks s;
+	  p
+	  )
      else "-- no method function found: " | formatDocumentTag s
      )
 code Function := f -> codeFunction(f,0)

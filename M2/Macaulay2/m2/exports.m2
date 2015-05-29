@@ -1055,6 +1055,7 @@ export {
 	symbol shield,
 	symbol show,
 	symbol showClassStructure,
+	symbol showHooks,
 	symbol showHtml,
 	symbol showStructure,
 	symbol showTex,

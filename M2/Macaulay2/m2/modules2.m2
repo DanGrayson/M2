@@ -366,6 +366,7 @@ presentation(Module) := Matrix => M -> (
 	  else relations M))
 -----------------------------------------------------------------------------  
 
+hookLocations # (minimalPresentation,Module) = (Module, symbol minimalPresentation)
 minimalPresentation(Module) := prune(Module) := Module => opts -> (cacheValue (symbol minimalPresentation => opts)) (M -> (
 	  if isFreeModule M then (
 	       M.cache.pruningMap = id_M;
