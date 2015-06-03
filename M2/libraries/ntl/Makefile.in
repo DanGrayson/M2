@@ -1,10 +1,10 @@
-# license for ntl: GPL v2 or later, see ntl-5.5.2/doc/copying.txt
 LICENSEFILES = doc/copying.txt
 # @configure_input@
 # http://www.shoup.net
 # a library for doing number theory
+#VERSION = 6.2.1
+#PATCHFILE = @abs_srcdir@/patch-$(VERSION)
 VERSION = 9.0.2
-# PATCHFILE = @abs_srcdir@/patch-$(VERSION)
 TARDIR = ntl-$(VERSION)
 BUILDDIR = $(UNTARDIR)/$(TARDIR)/src
 TARFILE = ntl-$(VERSION).tar.gz
@@ -24,18 +24,18 @@ DEB_CXXFLAGS = -O2
 DEB_LDFLAGS =
 endif
 
-CONFIGUREOPTIONS =				\
-	WIZARD=off				\
-	PREFIX=@pre_libm2dir@			\
-	LIBDIR=@pre_librariesdir@		\
-	INCLUDEDIR=@pre_libm2dir@/include	\
-	DOCDIR=@pre_libm2dir@/share/doc		\
+CONFIGUREOPTIONS =						\
+	WIZARD=off						\
+	PREFIX=@pre_libm2dir@					\
+	LIBDIR=@pre_librariesdir@				\
+	INCLUDEDIR=@pre_libm2dir@/include			\
+	DOCDIR=@pre_libm2dir@/share/doc				\
 	NTL_GMP_LIP=on NTL_NO_INIT_TRANS=on	\
-	RANLIB="@RANLIB@"			\
-	CXX="@CXX@"				\
-	CXXFLAGS="$(CXXFLAGS) $(DEB_CXXFLAGS)"	\
-	CPPFLAGS="$(CPPFLAGS) $(DEB_CPPFLAGS)"	\
-	LDFLAGS="$(LDFLAGS) $(DEB_LDFLAGS)"
+	RANLIB="@RANLIB@"					\
+	CXX="@CXX@"						\
+	CXXFLAGS="$(CXXFLAGS) $(DEB_CXXFLAGS)"			\
+	CPPFLAGS="$(CPPFLAGS) $(DEB_CPPFLAGS)"			\
+	LDFLAGS="$(LDFLAGS) $(DEB_LDFLAGS)"			\
 
 ifeq (@DEBUG@,yes)
 CONFIGUREOPTIONS += WIZARD=off
