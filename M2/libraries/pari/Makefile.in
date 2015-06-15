@@ -8,7 +8,8 @@ VPATH = @srcdir@
 # pari maintainers have been known to break URL's, so we copy their software to another server:
 # URL = http://pari.math.u-bordeaux.fr/pub/pari/unix
 
-VERSION = 2.7.3
+VERSION = 2.7.4-pre1
+TARDIR = pari-2.7.4
 # PATCHFILE = @abs_srcdir@/patch-$(VERSION)
 URL = http://www.math.uiuc.edu/Macaulay2/Downloads/OtherSourceCode
 
@@ -72,10 +73,13 @@ include ../Makefile.library
 # configure option is offered for specifying them:
 CONFIGENV += PATH="/usr/@host@/bin:$(PATH)"
 
+# replace this by something better later!  (rewrite pari's configure script)
+CONFIGENV += C_INCLUDE_PATH=/mingw64/include LIBRARY_PATH=/mingw64/lib
+
 # we have to detect which of these two answers it gives:
 #   ### Building without GNU MP support
 #   Using GNU MP, version 4.2.1
-config-chk: .config-checked-$(VERSION)
+# config-chk: .config-checked-$(VERSION)
 clean::; rm -f .config-checked-*
 .config-checked-$(VERSION):
 	: test whether pari successfully found gmp library during configuration :

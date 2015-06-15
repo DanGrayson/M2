@@ -198,6 +198,18 @@ various modern operating systems:
       above.  Alternatively, you can find the latest versions of Clang
       at http://llvm.org/releases/download.html .
 
+  MSYS2 under Microsoft Windows:
+    Follow these instructions in a shell using C:/msys64/mingw64_shell.bat .
+    Install build tools as follow:
+    	pacman -S git make autoconf automake bison patch pkg-config wget unzip
+    For MINGW64, install target libraries and build tools as follows:
+        pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-emacs mingw-w64-x86_64-ncurses mingw-w64-x86_64-libxml2 \
+	          mingw-w64-x86_64-libatomic_ops mingw-w64-x86_64-gdbm mingw-w64-x86_64-gc mingw-w64-x86_64-mpfr \
+		  mingw-w64-x86_64-readline mingw-w64-x86_64-lapack mingw-w64-x86_64-glpk mingw-w64-x86_64-boost \
+		  mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-pkg-config
+        Possibly also add --build=x86_64-w64-mingw32 to the configure script command line below.
+    For MINGW32, replace x86_64 by i686 in the names above.
+
   Cygwin 1.7 under Microsoft Windows:
     Use setup to install these packages:
 	autoconf automake bison emacs-X11 file flex gcc-core gcc-fortran

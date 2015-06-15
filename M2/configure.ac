@@ -96,10 +96,7 @@ case $OS in
   # Here we normalize the name of the OS for windows for startup.m2, which
   # needs to know that C:/FOO/BAR is an absolute path.
   CYGWIN*) OS=MicrosoftWindows ; ISSUE=${ISSUE:-Cygwin} ;;
-esac
-
-case $OS in
-   CYGWIN*) OS=MicrosoftWindows ; ISSUE=Cygwin ;;
+  MINGW64*) OS=MicrosoftWindows ; ISSUE=${ISSUE:-$MSYSTEM} ;;
 esac
 
 if test ! "$ISSUE"
@@ -221,6 +218,19 @@ AC_SUBST(GCC)			# gets set to yes or no by AC_PROG_CC
 AC_PROG_CXX()			# set CXXFLAGS before this
 AC_SUBST(GXX)			# gets set to yes or no by AC_PROG_CXX
 
+AC_PROG_FC()
+AC_SUBST(GFC)			# gets set to yes or no by AC_PROG_FC
+
+MACHINE_CC=`"$CC" -dumpmachine`
+MACHINE_CXX=`"$CXX" -dumpmachine`
+MACHINE_FC=`"$FC" -dumpmachine`
+if test "$MACHINE_CC" != "$MACHINE_CXX"
+then AC_MSG_ERROR(["$CC" and "$CXX" target different machines])
+fi
+if test "$MACHINE_CC" != "$MACHINE_FC"
+then AC_MSG_ERROR(["$CC" and "$FC" target different machines])
+fi
+
 AC_PROG_YACC()
 AC_PROG_RANLIB()
 AC_PROG_INSTALL()
@@ -274,37 +284,6 @@ AC_CHECK_SIZEOF([int *])
 AC_SUBST(SIZEOF_INT_P,$ac_cv_sizeof_int_p)
 AC_CHECK_SIZEOF([long])
 AC_SUBST(SIZEOF_LONG,$ac_cv_sizeof_long)
-
-dnl Now we make the 32 bit / 64 bit choice explicit, because config.guess may guess it's a 32 bit system even though gcc compiles
-dnl 64 bit object code by default, and then mpir's configure script (versions 1.2.1 and 1.3.0-rc1) gets confused.
-dnl if test "$GCC" = yes
-dnl then if test "$SIZEOF_INT_P" = 4
-dnl      then case " $CC $CFLAGS " in
-dnl      	    *" -m32 "*) ;;
-dnl 	    *) CC="$CC -m32" ;;
-dnl 	  esac
-dnl      fi
-dnl      if test "$SIZEOF_INT_P" = 8
-dnl      then case " $CC $CFLAGS " in
-dnl      	    *" -m64 "*) ;;
-dnl 	    *) CC="$CC -m64" ;;
-dnl 	  esac
-dnl      fi
-dnl fi
-dnl if test "$GXX" = yes
-dnl then if test "$SIZEOF_INT_P" = 4
-dnl      then case " $CXX $CFLAGS " in
-dnl      	    *" -m32 "*) ;;
-dnl 	    *) CXX="$CXX -m32" ;;
-dnl 	  esac
-dnl      fi
-dnl      if test "$SIZEOF_INT_P" = 8
-dnl      then case " $CXX $CFLAGS " in
-dnl      	    *" -m64 "*) ;;
-dnl 	    *) CXX="$CXX -m64" ;;
-dnl 	  esac
-dnl      fi
-dnl fi
 
 AC_MSG_CHECKING([whether compiling with $CXX and then linking with $CC works])
 cat >unwindtest-main.cpp <<EOF
@@ -940,10 +919,7 @@ fi
 
 if test $BUILD_glpk = no
 then AC_LANG(C)
-     AC_CHECK_HEADER(glpk.h,,[
-     	CPPFLAGS="-I/usr/include/glpk $CPPFLAGS"
-	unset ac_cv_header_glpk_h
-     	AC_CHECK_HEADER(glpk.h,,BUILD_glpk=yes)])
+     AC_CHECK_HEADER(glpk.h,,BUILD_glpk=yes)
 fi
 
 if test $BUILD_boost = no
@@ -955,13 +931,7 @@ fi
 
 if test $BUILD_cddlib = no
 then AC_LANG(C)
-     AC_CHECK_HEADER(cdd.h,,
-     	[ 
-	  CPPFLAGS="-I/usr/include/cddlib $CPPFLAGS"
-	  unset ac_cv_header_cdd_h
-	  AC_CHECK_HEADER(cdd.h,,BUILD_cddlib=yes,[#include <setoper.h>])
-	],
-	[#include <setoper.h>])
+     AC_CHECK_HEADER(cdd.h,,BUILD_cddlib=yes,[#include <setoper.h>])
 fi
 
 AC_SUBST(ULIMIT_T,yes)
@@ -1296,8 +1266,14 @@ do case $i in
 done
 
 AC_LANG(C)
-CPPFLAGS="-I/usr/local/include/libxml2 -I/usr/include/libxml2 $CPPFLAGS"
-AC_CHECK_HEADER(libxml/parser.h,,[AC_MSG_ERROR([include file libxml/parser.h not found, set CPPFLAGS (-I/foo/bar/libxml2) or install libxml2 development files])])
+AC_MSG_CHECKING(whether libxml2 is installed)
+    if pkg-config --exists libxml-2.0
+    then AC_MSG_RESULT(yes)
+	 CPPFLAGS="`pkg-config --cflags libxml-2.0` $CPPFLAGS"
+    else AC_MSG_RESULT(no)
+         AC_MSG_ERROR([install libxml2 development files])
+    fi
+    AC_CHECK_HEADER(libxml/parser.h)
 AC_SEARCH_LIBS(pow,m,,AC_MSG_ERROR(libm not found or not linkable))
 AC_SEARCH_LIBS(gzopen,z,,AC_MSG_ERROR(libz not found or not linkable))
 AC_SEARCH_LIBS(lzma_end,lzma,,AC_MSG_ERROR(library lzma not found or not linkable))
