@@ -13,18 +13,7 @@ TARDIR = pari-2.7.4
 # PATCHFILE = @abs_srcdir@/patch-$(VERSION)
 URL = http://www.math.uiuc.edu/Macaulay2/Downloads/OtherSourceCode
 
-# We (used to) leave out these tests, now we don't test at all
-#   (test-all would run them all) :
-#   test-ellglobalred - requires data files that we don't download
-#   test-ellsea - requires data files "seadata"
-#   test-galois - requires galois data files "galdata"
-#   test-ploth - needs to pop up a window
-#   test-galoisinit test-subfields test-partition - mysterious segmentation fault on Mac, but we don't use these routines
-#   test-program - fails under cygwin with this explanatory message after segfault:
-#		NOTE: the problem noted in 'program' is that install() does not work in your
-#		configuration (gp-sta only), so you will not be able to use this feature.
-#		Otherwise you can safely ignore the above warning.
-CHECKTARGET = .
+CHECKTARGET = test-all
 
 # we build only the shared library, because that's the version that is gmp compatible
 INSTALLTARGET += install-include
@@ -41,7 +30,10 @@ ifneq (,$(findstring darwin,$(HOST_OS)))
 HOST_OS = darwin
 endif
 
-CONFIGURECMD = $(CONFIGENV) dfltlibdir=$(LIBRARIESDIR)/lib ./Configure --prefix=$(LIBRARIESDIR) --with-gmp=$(LIBRARIESDIR) --host=$(HOST_CPU)-$(HOST_OS)
+# a temporary kludge:
+GMP_DIR = /mingw64
+
+CONFIGURECMD = $(CONFIGENV) dfltlibdir=$(LIBRARIESDIR)/lib ./Configure --prefix=$(LIBRARIESDIR) --host=$(HOST_CPU)-$(HOST_OS) --with-gmp=$(GMP_DIR)
 
 # Pari's configure script is needlessly confusing, since it's almost impossible to figure out what directory is chosen as the build directory.
 # We've opted to search for the directory containing the file pari.cfg, hoping it's unique.
@@ -69,13 +61,6 @@ endif
 
 include ../Makefile.library
 
-# get the right binary utilities by putting them on the path, since no
-# configure option is offered for specifying them:
-CONFIGENV += PATH="/usr/@host@/bin:$(PATH)"
-
-# replace this by something better later!  (rewrite pari's configure script)
-CONFIGENV += C_INCLUDE_PATH=/mingw64/include LIBRARY_PATH=/mingw64/lib
-
 # we have to detect which of these two answers it gives:
 #   ### Building without GNU MP support
 #   Using GNU MP, version 4.2.1
@@ -93,8 +78,6 @@ Makefile: @srcdir@/Makefile.in ; cd ../.. && ./config.status libraries/pari/Make
 run-example: example; ./example
 example: example.c -lpari
 example: CFLAGS += -Wall -Wno-unused -Werror -UNDEBUG
-TAGS : @srcdir@/TAGS
-@srcdir@/TAGS: /usr/include/pari/*.h example.c ; etags -o @srcdir@/TAGS $^
 # Local Variables:
 # compile-command: "make -C $M2BUILDDIR/libraries/pari "
 # End:
