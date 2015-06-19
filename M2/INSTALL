@@ -205,7 +205,7 @@ various modern operating systems:
       with the MSYS2 root, "/".  (Some tools, such as "tar", don't understand
       paths starting with disk drive letters.)
     Install build tools as follow:
-    	pacman -S git make autoconf automake bison patch pkg-config wget unzip
+    	pacman -S git make autoconf automake bison patch pkg-config wget unzip patch
     For MINGW64, install target libraries and build tools as follows:
         pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-emacs mingw-w64-x86_64-ncurses mingw-w64-x86_64-libxml2 \
 	          mingw-w64-x86_64-libatomic_ops mingw-w64-x86_64-gdbm mingw-w64-x86_64-gc mingw-w64-x86_64-mpfr \
