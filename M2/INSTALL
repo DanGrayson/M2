@@ -199,7 +199,11 @@ various modern operating systems:
       at http://llvm.org/releases/download.html .
 
   MSYS2 under Microsoft Windows:
-    Follow these instructions in a shell using C:/msys64/mingw64_shell.bat .
+    Follow these instructions in a shell started with C:/msys64/mingw64_shell.bat .
+    Use "pwd" to check whether the working directory begins with a disk drive
+      letter, such as "C:".  If so, Use "cd" to switch to a path that starts
+      with the MSYS2 root, "/".  (Some tools, such as "tar", don't understand
+      paths starting with disk drive letters.)
     Install build tools as follow:
     	pacman -S git make autoconf automake bison patch pkg-config wget unzip
     For MINGW64, install target libraries and build tools as follows:
