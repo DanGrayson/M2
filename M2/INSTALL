@@ -83,22 +83,37 @@ various modern operating systems:
 
   Ubuntu and Debian:
     Install packages as root with:
-      apt-get install -y -q sudo autoconf bison curl emacs fflas-ffpack flex g++ gcc gfortran install-info libatomic-ops-dev libboost-dev libc6-dev libcdd-dev libgc-dev libgdbm-dev libgivaro-dev libglpk-dev libgmp3-dev libgtest-dev liblapack-dev liblzma-dev libmpc-dev libmpfr-dev libncurses-dev libncurses5-dev libntl-dev libreadline-dev libtool libxml2-dev libz-dev make openssh-server patch pinentry-curses pkg-config time unzip xbase-clients yasm zlib1g-dev polymake w3c-markup-validator git dpkg-dev gfan libeigen3-dev libtool-bin frobby libfrobby-dev libnauty2-dev libnauty2 nauty nauty-doc coinor-csdp coinor-csdp-doc libflint-dev lrslib
-        # note: libz-dev seems to have been replaced by zlib1g-dev
-        # note: libncurses-dev seems to have been replaced by libncurses5-dev
-        # note: libreadline-gplv2-dev is an older GPL v2 version of libreadline
-	# note: cohomcalg is available only starting with Ubuntu 19; it's okay to skip it
+
+      apt-get install -y -q autoconf bison coinor-csdp coinor-csdp-doc curl dpkg-dev emacs fflas-ffpack	\
+	flex frobby g++ gcc gfan gfortran git install-info libatomic-ops-dev				\
+	libboost-dev libc6-dev libcdd-dev libeigen3-dev libflint-dev libfrobby-dev			\
+	libgc-dev libgdbm-dev libgivaro-dev libglpk-dev libgmp3-dev libgtest-dev			\
+	liblapack-dev liblzma-dev libmpc-dev libmpfr-dev libnauty2 libnauty2-dev			\
+	libncurses5-dev libncurses-dev libntl-dev libreadline-dev libtool libtool-bin			\
+	libxml2-dev libz-dev lrslib make nauty nauty-doc openssh-server patch				\
+	pinentry-curses pkg-config polymake time unzip w3c-markup-validator				\
+	xbase-clients yasm zlib1g-dev
+
+        notes:
+   	   libz-dev seems to have been replaced by zlib1g-dev
+           libncurses-dev seems to have been replaced by libncurses5-dev
+           libreadline-gplv2-dev is an older GPL v2 version of libreadline
+	   cohomcalg is available only starting with Ubuntu 19; it's okay to skip it
+
     On some systems, you may have to add
         FC=gfortran
       to the environment or to the "configure" command line below, if the "make" default fortran
       compiler "/usr/bin/f77" is not available.
+
     On a 32-bit system, add
         --with-mpir-config-options="ABI=32 --build=i686-pc-linux-gnu"
       to the "configure" command line below.  (The --build option is necessary
       only to enable distribution of the resulting binaries to users of other
       hardware.) 
+
     (To upgrade to a new release of Ubuntu, if desired, run "update-manager" if
     you want a GUI, or run "do-release-upgrade -d" for a command line interface.
+
     For Debian, run "apt-get update ; apt-get dist-upgrade".
 
   Raspbian:
@@ -170,7 +185,10 @@ various modern operating systems:
 
       sudo pacman --sync --needed archlinux-keyring
       sudo pacman-key --populate archlinux
-      sudo pacman --sync --needed autoconf automake bison boost cddlib emacs flex flint gc gcc gcc-fortran gdbm gfan git givaro glpk gmp gtest lapack make mpfr nauty ntl pkg-config readline texinfo time unzip yasm gtest wget patch eigen fflas-ffpack
+      sudo pacman --sync --needed 4ti2 autoconf automake bison boost cddlib		\
+	coin-or-csdp eigen emacs fflas-ffpack flex flint gc gcc gcc-fortran gdbm gfan	\
+	git givaro glpk gmp gtest lapack libatomic_ops lrs make mpfr nauty normaliz ntl	\
+	patch pkg-config readline texinfo time unzip wget yasm
 
     To upgrade the system:
 
