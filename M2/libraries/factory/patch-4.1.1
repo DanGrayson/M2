@@ -10,10 +10,58 @@ diff -ur /mike-raid/home/dan/src/M2/overnight/M2/BUILD/dan/builds.tmp/Ubuntu-16.
  
  class InternalCF;
  class CanonicalForm;
-diff -ur ~/Projects/M2/M2/M2/BUILD/mahrud/build/libraries/factory/build/m4/flint-check.m4 m4/flint-check.m4
---- /home/mahrud/Projects/M2/M2/M2/BUILD/mahrud/build/libraries/factory/build/m4/flint-check.m4	2018-02-15 08:02:18.000000000 -0600
-+++ m4/flint-check.m4	2020-05-28 13:44:27.476498101 -0500
-@@ -69,7 +69,7 @@
+diff -ur ../tmp/m4/flint-check.m4 m4/flint-check.m4
+--- ../tmp/m4/flint-check.m4	2018-02-15 14:02:18.000000000 +0000
++++ m4/flint-check.m4	2020-07-17 12:54:58.981133271 +0000
+@@ -15,22 +15,6 @@
+ 
+ AC_DEFUN([LB_CHECK_FLINT],
+ [
+-DEFAULT_CHECKING_PATH="/usr /usr/local /sw /opt/local"
+-
+-AC_ARG_WITH(flint,
+-[  --with-flint=<path>|yes|no  Use FLINT library. If argument is no, you do not have
+-                            the library installed on your machine (set as
+-			    default). If argument is yes or <empty> that means
+-			    the library is reachable with the standard search
+-			    path (/usr or /usr/local). Otherwise you give the
+-			    <path> to the directory which contain the library.
+-	     ],
+-	     [if test "$withval" = yes ; then
+-			FLINT_HOME_PATH="${DEFAULT_CHECKING_PATH}"
+-	      elif test "$withval" != no ; then
+-			FLINT_HOME_PATH="$withval"
+-	     fi],
+-	     [FLINT_HOME_PATH="${DEFAULT_CHECKING_PATH}"])
+ 
+ min_flint_version=ifelse([$1], ,2.3,$1)
+ 
+@@ -39,24 +23,10 @@
+ BACKUP_CFLAGS=${CFLAGS}
+ BACKUP_LIBS=${LIBS}
+ 
+-if test -n "$FLINT_HOME_PATH"; then
+ AC_MSG_CHECKING(for FLINT >= $min_flint_version)
+-fi
+ 
+ AC_LANG_PUSH([C])
+ 
+-for FLINT_HOME in ${FLINT_HOME_PATH}
+- do
+-## if test -r "$FLINT_HOME/include/flint/fmpz.h"; then
+-
+-	if test "x$FLINT_HOME" != "x/usr"; then
+-		FLINT_CFLAGS="-I${FLINT_HOME}/include/"
+-		FLINT_LIBS="-L${FLINT_HOME}/lib"
+-	else
+-		FLINT_CFLAGS=""
+-		FLINT_LIBS=""
+-	fi
+-
+ 	# we suppose that mpfr and mpir to be in the same place or available by default
+ 	FLINT_LIBS="$FLINT_LIBS -lflint -lmpfr"
+ 
+@@ -69,7 +39,7 @@
  	[
  	AC_TRY_RUN(
  	[#include <flint/flint.h>
@@ -22,3 +70,132 @@ diff -ur ~/Projects/M2/M2/M2/BUILD/mahrud/build/libraries/factory/build/m4/flint
  	],[
  	flint_found="yes"
  	break
+@@ -89,10 +59,7 @@
+ 	unset FLINT_CFLAGS
+ 	unset FLINT_LIBS
+ 	])
+-#else
+-#	flint_found="no"
+-#fi
+-done
++
+ AC_LANG_POP([C])
+ 
+ CFLAGS=${BACKUP_CFLAGS}
+diff -ur ../tmp/m4/gmp-check.m4 m4/gmp-check.m4
+--- ../tmp/m4/gmp-check.m4	2018-02-15 14:02:18.000000000 +0000
++++ m4/gmp-check.m4	2020-07-17 12:52:24.560304019 +0000
+@@ -7,22 +7,6 @@
+ 
+ AC_DEFUN([LB_CHECK_GMP],
+ [
+-DEFAULT_CHECKING_PATH="/usr /usr/local /sw /opt/local"
+-
+-AC_ARG_WITH(gmp,
+-[  --with-gmp= <path>|yes Use GMP library. This library is mandatory for Singular
+-	                 compilation. If argument is yes or <empty> that means
+-   	       		 the library is reachable with the standard search path
+-			 "/usr" or "/usr/local" (set as default). Otherwise you
+-			 give the <path> to the directory which contain the
+-			 library.
+-],
+-		[if test "$withval" = yes ; then
+-			GMP_HOME_PATH="${DEFAULT_CHECKING_PATH}"
+-	         elif test "$withval" != no ; then
+-			GMP_HOME_PATH="$withval ${DEFAULT_CHECKING_PATH}"
+-	        fi],
+-		[GMP_HOME_PATH="${DEFAULT_CHECKING_PATH}"])
+ 
+ min_gmp_version=ifelse([$1], ,1.0,$1)
+ 
+@@ -34,17 +18,7 @@
+ 
+ AC_LANG_PUSH([C])
+ 
+-for GMP_HOME in ${GMP_HOME_PATH}
+-  do
+-#	if test -r "$GMP_HOME/include/gmp.h"; then
+-
+-		if test "x$GMP_HOME" != "x/usr"; then
+-			GMP_CPPFLAGS="-I${GMP_HOME}/include"
+-			GMP_LIBS="-L${GMP_HOME}/lib -Wl,-rpath -Wl,${GMP_HOME}/lib -lgmp"
+-		else
+-			GMP_CPPFLAGS=""
+ 			GMP_LIBS="-lgmp"
+-		fi
+ 
+ 		CFLAGS="${BACKUP_CFLAGS} ${GMP_CPPFLAGS}"
+ 		LIBS="${BACKUP_LIBS} ${GMP_LIBS}"
+@@ -110,7 +84,7 @@
+ #	else
+ #		gmp_found="no"
+ #	fi
+-done
++
+ AC_LANG_POP([C])
+ 
+ CFLAGS=${BACKUP_CFLAGS}
+diff -ur ../tmp/m4/ntl-check.m4 m4/ntl-check.m4
+--- ../tmp/m4/ntl-check.m4	2018-02-15 14:02:18.000000000 +0000
++++ m4/ntl-check.m4	2020-07-17 12:48:21.242913759 +0000
+@@ -15,25 +15,10 @@
+ 
+ AC_DEFUN([LB_CHECK_NTL],
+ [
+-DEFAULT_CHECKING_PATH="/usr /usr/local /sw /opt/local"
+-
+-AC_ARG_WITH(ntl,
+-[  --with-ntl=<path>|yes|no  Use NTL library. If argument is no, you do not have
+-                            the library installed on your machine (set as
+-			    default). If argument is yes or <empty> that means
+-			    the library is reachable with the standard search
+-			    path (/usr or /usr/local). Otherwise you give the
+-			    <path> to the directory which contain the library.
+-	     ],
+-	     [if test "$withval" = yes ; then
+-			NTL_HOME_PATH="${DEFAULT_CHECKING_PATH}"
+-	      elif test "$withval" != no ; then
+-			NTL_HOME_PATH="$withval"
+-	     fi],
+-	     [NTL_HOME_PATH="${DEFAULT_CHECKING_PATH}"])
+ 
+ min_ntl_version=ifelse([$1], ,1.0,$1)
+ 
++AC_MSG_CHECKING(for NTL >= $min_ntl_version)
+ 
+ dnl Check for existence
+ BACKUP_CXXFLAGS=${CXXFLAGS}
+@@ -42,22 +27,6 @@
+ 
+ AC_LANG_PUSH(C++)
+ 
+-if test -n "$NTL_HOME_PATH"; then
+-AC_MSG_CHECKING(for NTL >= $min_ntl_version)
+-fi
+-
+-for NTL_HOME in ${NTL_HOME_PATH}
+- do
+-if test -r "$NTL_HOME/include/NTL/ZZ.h"; then
+-
+-	if test "x$NTL_HOME" != "x/usr"; then
+-		NTL_CPPFLAGS="-I${NTL_HOME}/include"
+-		NTL_LIBS="-L${NTL_HOME}/lib -lntl"
+-	else
+-		NTL_CPPFLAGS=
+-		NTL_LIBS="-lntl"
+-	fi
+-###	CFLAGS="${BACKUP_CFLAGS} ${NTL_CPPFLAGS} ${GMP_CPPFLAGS}"
+ 	CXXFLAGS="${BACKUP_CXXFLAGS} ${NTL_CPPFLAGS} ${GMP_CPPFLAGS}"
+ 	LIBS="${BACKUP_LIBS} ${NTL_LIBS} ${GMP_LIBS}"
+ 
+@@ -92,10 +61,6 @@
+ 	unset NTL_CPPFLAGS
+ 	unset NTL_LIBS
+ 	])
+-else
+-	ntl_found="no"
+-fi
+-done
+ 
+ if test "x$ntl_found" = "xyes" ; then
+ 	AC_SUBST(NTL_CPPFLAGS)
