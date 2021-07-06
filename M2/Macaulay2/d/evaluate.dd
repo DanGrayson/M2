@@ -2,6 +2,8 @@
 -- put bindings to variables before the forward references, for safety
 use hashtables;
 use convertr;
+header "#include <stdexcept>";
+header "#include <exceptions.hpp>";
 export globalAssignmentHooks := newHashTable(mutableHashTableClass,nothingClass);
 setupconst("globalAssignmentHooks",Expr(globalAssignmentHooks));
 export evalSequenceHadError := false;
@@ -1242,9 +1244,9 @@ handleError(c:Code,e:Expr):Expr := (
 	       e))
      else e);
 
-header "extern void M2_stack_push(char*);";
-header "extern void M2_stack_pop();";
-header "extern void M2_stack_trace();";
+header "extern \"C\" void M2_stack_push(char*);";
+header "extern \"C\" void M2_stack_pop();";
+header "extern \"C\" void M2_stack_trace();";
 stacktrace(e:Expr):Expr := (
     Ccode(void,"M2_stack_trace()"); e );
 setupfun("stacktrace",stacktrace);
@@ -1434,9 +1436,21 @@ export evalraw(c:Code):Expr := (
 
 export evalexcept(c:Code):Expr := (
      -- printErrorMessage(codePosition(c),"--evaluating: "+present(tostring(c)));
-     e := eval(c);
+     caught := false;
+     msg := "";
+     e := nullE;
+     Ccode(void,"try {");
+     e = eval(c);
+     Ccode(void," } catch (const exc::engine_error &errobject) {");
+     caught = true;
+     msg = tostring(Ccode(constcharstar, "errobject.what()"));
+     store(exceptionFlag, true);     
+     Ccode(void," }");
      if test(exceptionFlag) then (				    -- compare this code to the code at the top of eval() above
-	  if alarmedFlag then (
+     	  if caught then (
+	       clearAllFlags();
+	       printErrorMessageE(c, "--engine error: " + msg))
+	  else if alarmedFlag then (
 	       clearAlarmedFlag();
 	       printErrorMessageE(c,alarmMessage))
 	  else if test(interruptedFlag) then (
